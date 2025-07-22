@@ -219,7 +219,8 @@ class BackEnd:
 
     # graph, root = self.dataModel.getGraph(tree_name, "tree_name")
     # self.frontEnd.showNewTreeTree(graph, root, instances)
-    self.frontEnd.showNewNewTreeTree(tree_name, paths, properties, leaves, instances)
+    props = self.dataModel.getTreeItemProperties(tree_name)
+    self.frontEnd.showNewNewTreeTree(tree_name, paths, props, leaves, instances)
     pass
 
     # ======================== trees

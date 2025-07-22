@@ -384,7 +384,7 @@ class OntobuilderUI(QMainWindow):
       parent_name = item.parent().text(0)
     else:
       parent_name = None
-    linkpoint = (item.childCount() == 0) and (type == self.rules["is_member"])
+    linkpoint = (item.childCount() == 0) and (type == "member")
     debugging("item count", item.childCount(), linkpoint)
     debugging("-- tree item %s, column %s" % (name, column))
     if not linkpoint:
@@ -496,7 +496,7 @@ class OntobuilderUI(QMainWindow):
     for leave in leaves:
       for path in paths[leave]:
         parent_item = rootItem
-        current_path = []
+        # current_path = []
 
         # Build the path from leaf to root
         for i in reversed(path[:-1]):
@@ -508,7 +508,7 @@ class OntobuilderUI(QMainWindow):
               pass
           else:
             node_text = i
-          current_path.append((parent_item, node_text))
+          # current_path.append((parent_item, node_text))
 
           # Find or create the child item
           found = None
@@ -525,30 +525,34 @@ class OntobuilderUI(QMainWindow):
             node_id += 1
             items[node_id] = found
 
+
             # Set the node type for new items
-            if "undefined" not in node_text:
-              node_type = properties[leave][0].get(node_text.split(":")[0], "unknown")
-              # print(f"Creating new node '{node_text}' with type: {node_type}")
+            if "instance" not in node_text:
+
+              # node_type = properties[leave][0].get(node_text.split(":")[0], "unknown")
+              node_type = properties[node_text]
+              print(f"Creating new node '{node_text}' with type: {node_type}")
               found.node_type = self.rules[node_type]
             else:
-              node_type = properties[leave][0][instance]
+              node_type = properties[instance] #leave][0][instance]
               # print(f"Creating new undefined node with type from {path[0]}: {node_type}")
-              found.node_type = self.rules[node_type]
+              found.node_type = node_type
 
             if node_type == "unknown":
               print(f">>> Node type for '{node_text}' is still unknown")
           parent_item = found
 
-        # The last node in the path is the leaf
+        # The first node in the path is the leaf
         if path and len(path) > 1:
-          node_text = path[-1].split('#')[-1] if '#' in path[-1] else path[-1]
+          node_text = path[0].split('#')[-1] if '#' in path[-1] else path[0]
           # For leaf nodes, use the first property in the path if node_text is undefined
           if node_text == "undefined" and path[0] in properties[leave][0]:
-            node_type = properties[leave][0][path[0]]
+            node_type = properties[node_text] #[leave][0][path[0]]
             print(f"Setting undefined leaf node type using {path[0]}: {node_type}")
             parent_item.node_type = node_type
-          elif node_text in properties[leave][0]:
-            node_type = properties[leave][0][node_text]
+          else: #           elif node_text in properties[leave][0]:
+            # node_type = properties[leave][0][node_text]
+            node_type = properties[node_text.split(":")[0]]
             print(f"Setting leaf node '{node_text}' type to: {node_type}")
             parent_item.node_type = node_type
 

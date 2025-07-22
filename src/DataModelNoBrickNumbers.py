@@ -248,6 +248,17 @@ class DataModel:
   def removeBrick(self, name):
     del self.BRICK_GRAPHS[name]
 
+  def getTreeItemProperties(self, tree_name):
+    prop = {}
+    for t in self.TREE_GRAPHS[tree_name].triples((None, None, None)):
+      s, p, o = t
+      _, _s = s.split("#")
+      _, _p = p.split("#")
+      if _p == "type":
+        _p = "class"
+      prop[_s] = _p
+    return prop
+
   def getAllNamesInABrickOrATree(self, graphName, what):
 
     names = set()
@@ -446,7 +457,7 @@ class DataModel:
     graph = self.TREE_GRAPHS[tree_name]
     prefix = makeItemURI(tree_name, "")
 
-    paths, properties, leaves = self.getTreePaths(tree_name)
+    paths, properties, leaves = self.getTreePaths(tree_name)  # todo: properties is probably obsolete
 
     defined_paths = []
     for instance in self.instances[tree_name]:
