@@ -328,7 +328,7 @@ class OntobuilderUI(QMainWindow):
     dialog = UI_stringSelector("select brick",
                                brick_list)
     brick_name = dialog.selection
-    if brick_name == "":
+    if not brick_name :
       return
 
     message = {
