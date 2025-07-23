@@ -262,7 +262,8 @@ def find_all_paths(graph: Graph, property, start: URIRef, target: URIRef, max_de
       prop = p.split("#")[1] if "#" in p else str(p)
       # Store the property for this object in the current path
       props = current_props + [(object_name, prop)]
-      dfs(obj, current_path + [current], props, depth + 1)
+      pathc = current_path + [current]
+      dfs(obj, pathc, props, depth + 1)
 
   # Start with empty path and properties
   start_name = start.split("#")[1] if "#" in start else str(start)

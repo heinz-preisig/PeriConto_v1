@@ -85,7 +85,7 @@ def do__makeNewGraph(newName):
   new_graph.add(triple)
   new_graph.bind(newName, classURI)
   new_graph.bind(newName, itemURI)
-  return new_graph, classURI
+  return new_graph, makeItemURI(newName, "")
 
 
 def do__renameURI(newName, oldName, uri):
@@ -627,6 +627,7 @@ class DataModel:
     tree_graph,self.tree_namespaces[tree_name] = do__makeNewGraph(tree_name)
     self.TREE_GRAPHS[tree_name] = tree_graph
     self.linkBrickToItem(tree_name, tree_name, brick_name, new_tree=True)
+    pass
 
   def getTreeList(self):
     tree_list = sorted(self.TREE_GRAPHS.keys())
