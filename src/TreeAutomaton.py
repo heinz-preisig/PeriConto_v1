@@ -53,6 +53,7 @@ UI_state = {
         "selected tree"                                   : {
                 "show"  : ["exit",
                            "tree_visualise",
+                           "tree_visualise_ontology_only",
                            "ontology_save",
                            "ontology_save_as",
                            "tree_create",

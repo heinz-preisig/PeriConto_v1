@@ -110,7 +110,8 @@ class OntobuilderUI(QMainWindow):
     # self.ui.tabsBrickTrees.setTabVisible(1,False)
 
     roundButton(self.ui.pushOntologyLoad, "load", tooltip="load ontology")
-    roundButton(self.ui.pushTreeVisualise, "dot_graph", tooltip="visualise ontology")
+    roundButton(self.ui.pushTreeVisualise, "dot_graph", tooltip="visualise ontology with instances")
+    roundButton(self.ui.pushTreeVisualiseWithOut, "dot_graph", tooltip="visualise ontology only")
     roundButton(self.ui.pushOntologySave, "save", tooltip="save ontology")
     roundButton(self.ui.pushExit, "exit", tooltip="exit")
     roundButton(self.ui.pushOntologySaveAs, "save_as", tooltip="save with new name")
@@ -143,22 +144,23 @@ class OntobuilderUI(QMainWindow):
             }
 
     self.gui_objects = {
-            "exit"                    : self.ui.pushExit,
-            "ontology_load"           : self.ui.pushOntologyLoad,
-            "ontology_save"           : self.ui.pushOntologySave,
-            "ontology_save_as"        : self.ui.pushOntologySaveAs,
-            "tree_create"             : self.ui.pushTreeCreate,
-            "tree_delete"             : self.ui.pushTreeDelete,
-            "tree_copy"               : self.ui.pushTreeCopy,
-            "tree_rename"             : self.ui.pushTreeRename,
-            "item_insert"             : self.ui.pushTreeAddItem,
+            "exit"                        : self.ui.pushExit,
+            "ontology_load"               : self.ui.pushOntologyLoad,
+            "ontology_save"               : self.ui.pushOntologySave,
+            "ontology_save_as"            : self.ui.pushOntologySaveAs,
+            "tree_create"                 : self.ui.pushTreeCreate,
+            "tree_delete"                 : self.ui.pushTreeDelete,
+            "tree_copy"                   : self.ui.pushTreeCopy,
+            "tree_rename"                 : self.ui.pushTreeRename,
+            "item_insert"                 : self.ui.pushTreeAddItem,
             # "item_rename"             : self.ui.pushItemRename,
-            "remove_item"             : self.ui.pushRemoveItem,
-            "tree_reduce"             : self.ui.pushTreeReduce,
-            "tree_list"               : self.ui.listTrees,
-            "tree_link_existing_class": self.ui.pushTreeLinkExistingClass,
-            "tree_visualise"          : self.ui.pushTreeVisualise,
-            "tree_tree"               : self.ui.treeTree,
+            "remove_item"                 : self.ui.pushRemoveItem,
+            "tree_reduce"                 : self.ui.pushTreeReduce,
+            "tree_list"                   : self.ui.listTrees,
+            "tree_link_existing_class"    : self.ui.pushTreeLinkExistingClass,
+            "tree_visualise"              : self.ui.pushTreeVisualise,
+            "tree_visualise_ontology_only": self.ui.pushTreeVisualiseWithOut,
+            "tree_tree"                   : self.ui.treeTree,
             }
 
   def setRules(self, rules, primitives):
@@ -298,7 +300,6 @@ class OntobuilderUI(QMainWindow):
             }
     self.backend.processEvent(message)
 
-
   def on_pushRemoveItem_pressed(self):
     debugging("-- pushRemoveItem")
 
@@ -328,7 +329,7 @@ class OntobuilderUI(QMainWindow):
     dialog = UI_stringSelector("select brick",
                                brick_list)
     brick_name = dialog.selection
-    if not brick_name :
+    if not brick_name:
       return
 
     message = {
@@ -344,7 +345,16 @@ class OntobuilderUI(QMainWindow):
     self.backend.processEvent(message)
 
   def on_pushTreeVisualise_pressed(self):
-    message = {"event": "visualise"}
+    message = {"event": "visualise",
+               "with_no_instances": False}
+
+    self.backend.processEvent(message)
+
+    debugging("-- pushTreeVisualise")
+
+  def on_pushTreeVisualiseWithOut_pressed(self):
+    message = {"event": "visualise",
+               "with_no_instances": True}
     self.backend.processEvent(message)
 
     debugging("-- pushTreeVisualise")
@@ -525,7 +535,6 @@ class OntobuilderUI(QMainWindow):
             node_id += 1
             items[node_id] = found
 
-
             # Set the node type for new items
             if "instance" not in node_text:
 
@@ -534,7 +543,7 @@ class OntobuilderUI(QMainWindow):
               print(f"Creating new node '{node_text}' with type: {node_type}")
               found.node_type = self.rules[node_type]
             else:
-              node_type = properties[instance] #leave][0][instance]
+              node_type = properties[instance]  # leave][0][instance]
               # print(f"Creating new undefined node with type from {path[0]}: {node_type}")
               found.node_type = node_type
 
@@ -547,10 +556,10 @@ class OntobuilderUI(QMainWindow):
           node_text = path[0].split('#')[-1] if '#' in path[-1] else path[0]
           # For leaf nodes, use the first property in the path if node_text is undefined
           if node_text == "undefined" and path[0] in properties[leave][0]:
-            node_type = properties[node_text] #[leave][0][path[0]]
+            node_type = properties[node_text]  # [leave][0][path[0]]
             print(f"Setting undefined leaf node type using {path[0]}: {node_type}")
             parent_item.node_type = node_type
-          else: #           elif node_text in properties[leave][0]:
+          else:  # elif node_text in properties[leave][0]:
             # node_type = properties[leave][0][node_text]
             node_type = properties[node_text.split(":")[0]]
             print(f"Setting leaf node '{node_text}' type to: {node_type}")

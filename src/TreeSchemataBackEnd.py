@@ -85,6 +85,8 @@ class BackEnd:
         self.saveTrees(message)
       elif a == "visualise":
         self.visualise(message)
+      elif a == "visualise_ontology_only":
+        self.visualise(message)
       else:
         print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> oops no such command", a)
 
@@ -233,10 +235,12 @@ class BackEnd:
 
   def visualise(self, message):
     tree = self.memory["tree_name"]
+    with_no_instances = message["with_no_instances"]
+    print("with instances:", with_no_instances)
     dataBrickTuples = self.dataModel.makeDataTuplesForGraph(tree,
                                                             "tree_name")
     class_names = [tree]  # sorted(self.dataModel.BRICK_GRAPHS.keys())
-    graph = TreePlot(graph_name=tree, graph_triples=dataBrickTuples, class_names=class_names)
+    graph = TreePlot(graph_name=tree, graph_triples=dataBrickTuples, class_names=class_names, no_instances=with_no_instances)
     graph.makeMe(tree)
     file_name_bricks = os.path.join(ONTOLOGY_REPOSITORY, self.project_name) + "+%s_tree" % tree
 

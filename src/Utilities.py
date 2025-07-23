@@ -438,11 +438,12 @@ class TreePlot:
     Create Digraph plot
   """
 
-  def __init__(self, graph_name, graph_triples, class_names):
+  def __init__(self, graph_name, graph_triples, class_names, no_instances=True):
 
     self.graph_name = graph_name
     self.classes = class_names
     self.triples = graph_triples
+    self.no_instances = no_instances
     self.dot = Digraph(graph_name)
     self.dot.graph_attr["rankdir"] = "LR"  # Set graph direction Left to Right
     # self.dot.graph_attr["label"] = "Graph of : %s"%graph_name  # Add a title
@@ -492,12 +493,13 @@ class TreePlot:
 
     for q in self.triples:
       s, p, o, dir = q
-      if ":" in s:
-        s = s.split(":")[-1]
-      if ":" in o:
-        o = o.split(":")[-1]
-      new_triples.append((s, p, o, dir))
-      nodes.add((s, p))
+      if not(self.no_instances and "instance" in s):
+        if ":" in s:
+          s = s.split(":")[-1]
+        if ":" in o:
+          o = o.split(":")[-1]
+        new_triples.append((s, p, o, dir))
+        nodes.add((s, p))
       # nodes.add((o, p))
 
     for n, p in nodes:
