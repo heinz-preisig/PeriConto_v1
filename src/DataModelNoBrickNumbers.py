@@ -575,7 +575,7 @@ class DataModel:
         self.instance_counter[tree_name] = -1
     pass
 
-  def reduceGraph(self, tree_name):  # todo: fix
+  def reduceGraph(self, tree_name):
     pass
     prefix = makeItemURI(tree_name, "")
     tree_graph = self.TREE_GRAPHS[tree_name]
@@ -626,7 +626,6 @@ class DataModel:
 
     tree_graph,self.tree_namespaces[tree_name] = do__makeNewGraph(tree_name)
     self.TREE_GRAPHS[tree_name] = tree_graph
-    # self.tree_namespaces[tree_name] = Namespace(makeItemURI(tree_name, ""))
     self.linkBrickToItem(tree_name, tree_name, brick_name, new_tree=True)
 
   def getTreeList(self):
