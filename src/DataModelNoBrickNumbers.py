@@ -85,7 +85,7 @@ def do__makeNewGraph(newName):
   new_graph.add(triple)
   new_graph.bind(newName, classURI)
   new_graph.bind(newName, itemURI)
-  return new_graph
+  return new_graph, classURI
 
 
 def do__renameURI(newName, oldName, uri):
@@ -158,7 +158,7 @@ def do__writeQuadFile(conjunctiveGraph, f):
   inf.close()
 
 
-def copyGraph(oldName, old_graph, newName, new_graph):
+def do__copyGraph(oldName, old_graph, newName, new_graph):
   for s, p, o in old_graph.triples((None, None, None)):
     if p != RDFSTerms["is_class"]:
       s_new = s
@@ -169,6 +169,30 @@ def copyGraph(oldName, old_graph, newName, new_graph):
         o_new = do__renameURI(newName, oldName, o)
       triple = s_new, p, o_new
       new_graph.add(triple)
+
+
+def do__extractAllNames(g, names, triple):
+  for subject, predicate, object in g.triples(triple):
+    s = extractNameFromIRI(subject)
+    o = extractNameFromIRI(object)
+    names.add(s)
+    names.add(o)
+  return names
+
+
+def do__removeItem(graph, item_name, parent_name, tree_name):
+  subject = URIRef(makeItemURI(tree_name, item_name))
+  object = URIRef(makeItemURI(tree_name, parent_name))
+  triple = (subject, None, object)
+  predicates = RDFSTerms.values()
+  subtree = get_subtree(graph, triple[0], predicates)
+  # now delete from the identified subtree
+  to_delete = [triple]
+  for n in subtree:
+    for t in graph.triples((None, None, n)):
+      to_delete.append(t)
+  for t in to_delete:
+    graph.remove(t)
 
 
 class DataModel:
@@ -235,15 +259,7 @@ class DataModel:
 
   def newBrick(self, brick_name):
     graphs = self.BRICK_GRAPHS
-    graphs[brick_name] = Graph()
-    classURI = makeItemURI(brick_name, brick_name)
-    itemURI = makeItemURI(brick_name, "")
-    triple = (URIRef(classURI), RDFSTerms["is_class"], RDFSTerms["class"])
-    graphs[brick_name].add(triple)
-    graphs[brick_name].bind(brick_name, classURI)
-    self.brick_namespaces[brick_name] = classURI
-    graphs[brick_name].bind(brick_name, itemURI)
-    pass
+    graphs[brick_name], self.brick_namespaces[brick_name] = do__makeNewGraph(brick_name)
 
   def removeBrick(self, name):
     del self.BRICK_GRAPHS[name]
@@ -264,51 +280,22 @@ class DataModel:
     names = set()
     if what == "brick":
       g = self.BRICK_GRAPHS[graphName]
-    # elif what == "tree":
-    else:
+    else:  # trees
       g = self.TREE_GRAPHS[graphName]
-    # else:
-    #   print(">>>>>>>>>>>> should not come here")
-    #   return names
     triple = (None, None, None)
-    for subject, predicate, object in g.triples(triple):
-      s = extractNameFromIRI(subject)
-      o = extractNameFromIRI(object)
-      names.add(s)
-      names.add(o)
-    return names
-
-  # def removeItem(self, what_type_of_graph, brick, item):
-  #   subject = URIRef(makeItemURI(brick, item))
-  #   triple = (subject, None, None)
-  #   self.__removeItemFromGraph(what_type_of_graph, brick, subject, triple)
+    return do__extractAllNames(g, names, triple)
 
   def removeItem(self, what_type_of_graph, tree_name, parent_name, item_name):
-    subject = URIRef(makeItemURI(tree_name, item_name))
-    object = URIRef(makeItemURI(tree_name, parent_name))
-    triple = (subject, None, object)
-    self.__removeItemFromGraph(what_type_of_graph, tree_name, triple)
-
-  def __removeItemFromGraph(self, what_type_of_graph, name, triple): #todo: make function
     if what_type_of_graph == "bricks":
-      graph = self.BRICK_GRAPHS[name]
+      graph = self.BRICK_GRAPHS[tree_name]
     else:
-      graph = self.TREE_GRAPHS[name]
+      graph = self.TREE_GRAPHS[tree_name]
 
-    predicates = RDFSTerms.values()
-    subtree = get_subtree(graph, triple[0], predicates)
-
-    # now delete from the identified subtree
-    to_delete = [triple]
-    for n in subtree:
-      for t in graph.triples((None, None, n)):
-        to_delete.append(t)
-    for t in to_delete:
-      graph.remove(t)
+    do__removeItem(graph, item_name, parent_name, tree_name)
 
     pass
 
-  def item_add(self, Class, ClassOrSubClass, name):
+  def addItemToBrick(self, Class, ClassOrSubClass, name):
     g = self.BRICK_GRAPHS[Class]
     do__addItemToGraph(Class, ClassOrSubClass, g, name)
 
@@ -355,11 +342,6 @@ class DataModel:
       print(">>> something went wrong, Not triple found")
     pass
 
-    # if DEBUGG:
-    #   for ttt in graph.triples((None, None, None)):
-    #     print(ttt)
-    #   print("end")
-    #   print(self.instances[tree_name])
 
   def modifyPrimitiveType(self, brick_name, primitive_name, new_type):
     graph = self.BRICK_GRAPHS[brick_name]
@@ -384,19 +366,17 @@ class DataModel:
     graph.remove(t)
 
   def renameBrick(self, oldName, newName):
-    new_graph = do__makeNewGraph(newName)
+    new_graph,self.brick_namespaces[newName]  = do__makeNewGraph(newName)
     old_graph = self.BRICK_GRAPHS[oldName]
-    copyGraph(oldName, old_graph, newName, new_graph)
+    do__copyGraph(oldName, old_graph, newName, new_graph)
     self.BRICK_GRAPHS[newName] = new_graph
-    self.brick_namespaces[newName] = Namespace(makeItemURI(newName, newName))
     del self.BRICK_GRAPHS[oldName]
 
   def renameTree(self, oldName, newName):
-    new_graph = do__makeNewGraph(newName)
+    new_graph, self.tree_namespaces[newName] = do__makeNewGraph(newName)
     old_graph = self.TREE_GRAPHS[oldName]
-    copyGraph(oldName, old_graph, newName, new_graph)
+    do__copyGraph(oldName, old_graph, newName, new_graph)
     self.TREE_GRAPHS[newName] = new_graph
-    self.tree_namespaces[newName] = Namespace(makeItemURI(newName, ""))
     del self.TREE_GRAPHS[oldName]
     del self.tree_namespaces[oldName]
 
@@ -410,12 +390,11 @@ class DataModel:
   def copyTree(self, from_name, to_name):
 
     from_graph = self.TREE_GRAPHS[from_name]
-    to_graph = do__makeNewGraph(to_name)
+    to_graph, self.tree_namespaces[to_name] = do__makeNewGraph(to_name)
     self.TREE_GRAPHS[to_name] = to_graph
-    self.tree_namespaces[to_name] = Namespace(makeItemURI(to_name, ""))
     self.instances[to_name] = copy.deepcopy(self.instances[from_name])
     self.instance_counter[to_name] = copy.copy(self.instance_counter[from_name])
-    copyGraph(from_name, from_graph, to_name, to_graph)
+    do__copyGraph(from_name, from_graph, to_name, to_graph)
     pass
 
   def deleteTree(self, tree_name):
@@ -469,7 +448,6 @@ class DataModel:
             type = properties[p][0][path[0]]
             predicate = RDFSTerms[type]
             object = URIRef(prefix + path[1])
-            # instance_path = [instance_ID + ":undefined"] + path[1:]
             instance_path = [instance_ID] + path[1:]
             self.instances[tree_name].addInstance(instance_ID,
                                                   value="undefined",
@@ -580,6 +558,8 @@ class DataModel:
       self.instances[tree_name] = Instances()
       for i in instances[tree_name]:
         path = instances[tree_name][i]["path"]
+        if ":" in path[0]:
+          path[0] = path[0].split(":")[0]
         value = instances[tree_name][i]["value"]
         self.instances[tree_name].addInstance(i, value=value, path=path)
 
@@ -644,9 +624,9 @@ class DataModel:
     self.instance_counter[tree_name] = -1
     self.instances[tree_name] = Instances()
 
-    tree_graph = do__makeNewGraph(tree_name)
+    tree_graph,self.tree_namespaces[tree_name] = do__makeNewGraph(tree_name)
     self.TREE_GRAPHS[tree_name] = tree_graph
-    self.tree_namespaces[tree_name] = Namespace(makeItemURI(tree_name, ""))
+    # self.tree_namespaces[tree_name] = Namespace(makeItemURI(tree_name, ""))
     self.linkBrickToItem(tree_name, tree_name, brick_name, new_tree=True)
 
   def getTreeList(self):

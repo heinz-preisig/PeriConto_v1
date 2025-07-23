@@ -168,7 +168,7 @@ class BackEnd():
     ClassOrSubClass = self.memory["item"]
     brick_name = self.memory["brick"]
     name = message["name"]
-    self.dataModel.item_add(brick_name, ClassOrSubClass, name)
+    self.dataModel.addItemToBrick(brick_name, ClassOrSubClass, name)
 
   def PrimitiveAdd(self, message):
     brick_name = self.memory["brick"]
