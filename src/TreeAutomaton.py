@@ -208,7 +208,7 @@ UI_state = {
                 "except": [],
                 "action": [],
                 },
-        "%s in treeTree selected" % RULES["uri"]          : {
+        "%s in treeTree selected" % RULES["anyURI"]          : {
                 "show"  : ["exit",
                            "tree_visualise",
                            "ontology_save",
