@@ -289,7 +289,7 @@ class DataModel:
     triple = (subject, None, object)
     self.__removeItemFromGraph(what_type_of_graph, tree_name, triple)
 
-  def __removeItemFromGraph(self, what_type_of_graph, name, triple):
+  def __removeItemFromGraph(self, what_type_of_graph, name, triple): #todo: make function
     if what_type_of_graph == "bricks":
       graph = self.BRICK_GRAPHS[name]
     else:
@@ -402,21 +402,10 @@ class DataModel:
 
     # fix up instances:
     self.instances[newName] = copy.deepcopy(self.instances[oldName])
-
     for instance in self.instances[newName]:
       path = self.instances[newName][instance]["path"]
-      newpath = path[0:-1] + newName
-      self.instances[newName][instance]["path"] = newpath
-
-      # for tree in list(self.instances.keys()):
-      #   self.instances[newName] = {}
-      #   if tree == oldName:
-      #     paths = copy.copy(self.instances[oldName])
-      #     for instance in paths:
-      #       path = paths[instance]
-      #       path[-1] = newName
-      #       self.instances[newName][instance] = path
-      del self.instances[oldName]
+      path[-1] = newName
+    del self.instances[oldName]
 
   def copyTree(self, from_name, to_name):
 
@@ -480,10 +469,8 @@ class DataModel:
             type = properties[p][0][path[0]]
             predicate = RDFSTerms[type]
             object = URIRef(prefix + path[1])
-            instance_path = [instance_ID + ":undefined"] + path[1:]
-
-            # self.instances[tree_name][instance_ID] = (instance_path, "undefined")
-            # self.instances[tree_name][instance_ID]["value"] = "undefined"
+            # instance_path = [instance_ID + ":undefined"] + path[1:]
+            instance_path = [instance_ID] + path[1:]
             self.instances[tree_name].addInstance(instance_ID,
                                                   value="undefined",
                                                   path=instance_path)
@@ -495,17 +482,6 @@ class DataModel:
   def renameItemInBrick(self, brick, old_name, type, new_name):
     g = self.BRICK_GRAPHS[brick]
     do__renameItem(brick,g , old_name, type , new_name)
-
-  def renameValue(self, brick, old_name, new_name, type):
-    g = self.BRICK_GRAPHS[brick]
-    old_object = URIRef(makeItemURI(brick, old_name))
-    new_object = URIRef(makeItemURI(brick, new_name))
-    # object = URIRef(makeItemURI(brick, parent_name))
-    triple = (Literal(""), RDFSTerms[type], old_object)
-    g.remove(triple)
-    triple = (Literal(""), RDFSTerms[type], new_object)
-    g.add(triple)
-    pass
 
   def renameItemInTree(self, brick, old_name, newName):
     graph = self.TREE_GRAPHS[brick]
