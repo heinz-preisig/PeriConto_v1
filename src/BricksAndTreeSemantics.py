@@ -53,6 +53,7 @@ RULES = {
         "integer"      : "integer",
         "decimal"      : "decimal",
         "anyURI"       : "uri",
+        "uri"       : "uri",
         "label"        : "string",
         "boolean"      : "boolean",
         "comment"      : "comment",
