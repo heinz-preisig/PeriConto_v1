@@ -60,6 +60,7 @@ COLOURS = {
         "string"       : QtGui.QColor(255, 200, 200, 255),
         "comment"      : QtGui.QColor(155, 155, 255),
         "uri"          : QtGui.QColor(255, 200, 200, 255),
+        "anyURI"          : QtGui.QColor(255, 200, 200, 255),
         "boolean"      : QtGui.QColor(255, 200, 200, 255),
         "selected"     : QtGui.QColor(252, 248, 192, 255),
         "unselect"     : QtGui.QColor(255, 255, 255, 255),

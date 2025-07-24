@@ -35,7 +35,7 @@ RDFSTerms = {
         "integer"      : XSD.integer,
         "string"       : XSD.string,
         "decimal"      : XSD.decimal,
-        "uri"          : XSD.anyURI,
+        # "uri"          : XSD.anyURI,
         "anyURI"       : XSD.anyURI,
         "label"        : RDFS.label,
         "boolean"      : XSD.boolean,
@@ -66,7 +66,7 @@ PRIMITIVES = ["integer",
               "comment",
               "decimal",
               "string",
-              "uri",
+              "anyURI",
               "boolean"]
 
 RDF_PRIMITIVES = [RDFSTerms[i] for i in PRIMITIVES]

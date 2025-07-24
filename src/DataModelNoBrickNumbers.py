@@ -425,8 +425,7 @@ class DataModel:
     graph = self.TREE_GRAPHS[tree_name]
     prefix = makeItemURI(tree_name, "")
 
-    paths, properties, leaves = self.getTreePaths(tree_name)  # todo: properties is probably obsolete
-
+    paths, properties, leaves = self.getTreePaths(tree_name)
     defined_paths = []
     for instance in self.instances[tree_name]:
       defined_path = self.instances[tree_name][instance]["path"]
@@ -445,15 +444,18 @@ class DataModel:
             print("counter", self.instance_counter[tree_name])
             subject_instance = URIRef(prefix + instance_ID)
             subject_empty = URIRef(prefix + "")
-            type = properties[p][0][path[0]]
-            predicate = RDFSTerms[type]
-            object = URIRef(prefix + path[1])
+            item_type = properties[p][i][path[0]]
+            item_predicate = RDFSTerms[item_type]
+            item_object = URIRef(prefix + path[1])
             instance_path = [instance_ID] + path[1:]
             self.instances[tree_name].addInstance(instance_ID,
                                                   value="undefined",
                                                   path=instance_path)
-            graph.add((subject_instance, predicate, object))
-            graph.remove((subject_empty, predicate, object))
+            graph.add((subject_instance, item_predicate, item_object))
+            graph.remove((subject_empty, item_predicate, item_object))
+
+            print("adding  ", subject_instance, item_predicate, item_object)
+            print("removing", subject_empty, item_predicate, item_object)
 
     pass
 
