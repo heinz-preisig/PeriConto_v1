@@ -415,8 +415,12 @@ class OntobuilderUI(QMainWindow):
           else:
             value = ""
         else:
+          if value == "undefined":
+            set_value = ""
+          else:
+            set_value = ""
           dialog = UI_String("provide %s" % type,
-                             value=value,
+                             value=set_value,
                              placeholdertext=type,
                              validator=type)
           value = dialog.text

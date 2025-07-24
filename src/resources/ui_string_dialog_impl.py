@@ -102,8 +102,12 @@ class UI_String(QtWidgets.QDialog):
         # val = r"^[a-zA-Z][a-zA-Z0-9]*$"
         val = r"^([a-zA-Z][a-zA-Z0-9]+\s)*$"
         # self.adjust = r"^[A-Z][A-Z0-9-]*$"
-      elif validator == "url":
-        val = r"^[A-Z][A-Z0-9-]*$"
+      elif validator == "anyURI":
+        val = r"/^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/" #r"^[A-Z][A-Z0-9-]*$"
+        val = r"(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})(\.[a-zA-Z0-9]{2,})?"
+        val = r"(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])"
+        val = r"^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?"
+        val = r"^(((ht|f)tp(s?))\://)?(www.|[a-zA-Z].)[a-zA-Z0-9\-\.]+\.(com|edu|gov|mil|net|org|biz|info|name|museum|us|ca|uk)(\:[0-9]+)*(/($|[a-zA-Z0-9\.\,\;\?\'\\\+&amp;%\$#\=~_\-]+))*$"
       elif validator == "comment":
         val = r""
       elif validator == "string":
@@ -213,7 +217,10 @@ if __name__ == '__main__':
   # var_exp = r"^([-+]?\d*\.?\d+)(?:[eE]([-+]?\d+))?$"
   # var_bool = r"^(?:(1|y(?:es)?|t(?:rue)?|on)|(0|n(?:o)?|f(?:alse)?|off))$"
   # var_url = r"^(?:(1|y(?:es)?|t(?:rue)?|on)|(0|n(?:o)?|f(?:alse)?|off))$"
-  w = UI_String("give name", placeholdertext="name", limiting_list=["1"], validator="name_upper")
+  # anyURI = r"/^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/"
+  # /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/
+  # (https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})(\.[a-zA-Z0-9]{2,})?
+  w = UI_String("give name", placeholdertext="name", limiting_list=["1"], validator="anyURI")
   w.show()
   s = w.text
   print(s)
