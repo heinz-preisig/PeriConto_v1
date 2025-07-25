@@ -22,7 +22,7 @@ selected tree
 import os
 import sys
 
-from BricksAndTreeSemantics import FILE_FORMAT
+from BricksAndTreeSemantics import FILE_FORMAT_QUAD_TRIG
 from BricksSchemataBackEnd import BackEnd
 from Utilities import camelCase
 from Utilities import classCase
@@ -134,13 +134,13 @@ class OntobuilderUI(QMainWindow):
             "brick_rename"     : self.ui.pushBrickRename,
             #
             "item_add"         : self.ui.pushItemAdd,
-            "item_rename"      : self.ui.pushItemRename,  # self.ui.pushBrickItemOrPrimitiveRename,
-            "item_remove"      : self.ui.pushItemRemove,  # self.ui.pushBrickItemOrPrimitiveRename,
+            "item_rename"      : self.ui.pushItemRename,
+            "item_remove"      : self.ui.pushItemRemove,
             #
-            "primitive_add"    : self.ui.pushPrimitiveAdd,  # self.ui.pushBrickAddPrimitive,
-            "primitive_remove"    : self.ui.pushPrimitiveRemove,  # self.ui.pushBrickAddPrimitive,
-            "primitive_rename" : self.ui.pushPrimitiveRename,  # self.ui.pushBrickItemOrPrimitiveRename,
-            "primitive_change" : self.ui.pushPrimitiveChange,  # self.ui.pushBrickChangePrimitive,
+            "primitive_add"    : self.ui.pushPrimitiveAdd,
+            "primitive_remove"    : self.ui.pushPrimitiveRemove,
+            "primitive_rename" : self.ui.pushPrimitiveRename,
+            "primitive_change" : self.ui.pushPrimitiveChange,
             #
             "ontology_create"  : self.ui.pushOntologyCreate,
             "ontology_load"    : self.ui.pushOntologyLoad,
@@ -157,8 +157,6 @@ class OntobuilderUI(QMainWindow):
     self.allNames = names
 
   def setInterface(self, shows):
-    pass
-
     set_hide = set(self.gui_objects.keys()) - set(shows)
     for hide in set_hide:
       self.gui_objects[hide].hide()
@@ -189,7 +187,7 @@ class OntobuilderUI(QMainWindow):
     file_spec, extension = QFileDialog.getOpenFileName(None,
                                                        "Load Ontology",
                                                        ONTOLOGY_REPOSITORY,
-                                                       "*.%s" % FILE_FORMAT,
+                                                       "*.%s" % FILE_FORMAT_QUAD_TRIG,
                                                        )
     if file_spec == "":
       return
@@ -360,7 +358,6 @@ class OntobuilderUI(QMainWindow):
     current_item = self.ui.brickTree.currentItem()
     item_name = current_item.text(0)
     parent_name = current_item.parent().text(0)
-    # item = self.ui.brickTree.currentItem()
     type = current_item.type
     if type in self.primitives:
       type = current_item.child(0).type
@@ -377,7 +374,6 @@ class OntobuilderUI(QMainWindow):
     current_item = self.ui.brickTree.currentItem()
     item_name = current_item.text(0)
     parent_name = current_item.parent().text(0)
-    # item = self.ui.brickTree.currentItem()
     type = current_item.type
     if type in self.primitives:
       type = current_item.child(0).type
@@ -416,17 +412,6 @@ class OntobuilderUI(QMainWindow):
             }
     self.backend.processEvent(message)
 
-  # def on_listTrees_itemClicked(self, item):
-  #   name = item.text()
-  #   debugging("-- listTrees -- item", name)
-  #   event = "selected tree"
-  #   message = {
-  #           "event": event,
-  #           "name" : name
-  #           }
-  #   debugging("message:", message)
-  #   self.backend.processEvent(message)
-
   def on_brickTree_itemClicked(self, item, column):
     name = item.text(column)
     debugging("-- brick tree item %s, column %s" % (name, column))
@@ -438,17 +423,6 @@ class OntobuilderUI(QMainWindow):
             }
     debugging("message:", message)
     self.backend.processEvent(message)
-
-  # def on_treeTree_itemClicked(self, item, column):
-  #   name = item.text(column)
-  #   debugging("-- tree item %s, column %s" % (name, column))
-  #   selected = item.type
-  #   event = "%s in treeTree selected" % selected
-  #   message = {
-  #           "event": event,
-  #           "name" : name
-  #           }
-  #   self.backend.processEvent(message)
 
   def showBrickList(self, brickList):
     self.brickList = brickList

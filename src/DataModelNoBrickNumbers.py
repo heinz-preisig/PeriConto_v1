@@ -5,12 +5,12 @@ import os
 import rdflib
 from rdflib import ConjunctiveGraph
 from rdflib import Graph
-from rdflib import Literal
 from rdflib import Namespace
 from rdflib import URIRef
 
 from BricksAndTreeSemantics import BASE
-from BricksAndTreeSemantics import FILE_FORMAT
+from BricksAndTreeSemantics import FILE_FORMAT_DATA
+from BricksAndTreeSemantics import FILE_FORMAT_QUAD_TRIG
 from BricksAndTreeSemantics import MYTerms
 from BricksAndTreeSemantics import ONTOLOGY_REPOSITORY
 from BricksAndTreeSemantics import RDFSTerms
@@ -18,12 +18,11 @@ from BricksAndTreeSemantics import RDF_PRIMITIVES
 from BricksAndTreeSemantics import extractNameFromIRI
 from BricksAndTreeSemantics import makeClassURI
 from BricksAndTreeSemantics import makeItemURI
-from Utilities import find_path_back_triples
 from Utilities import debugging
 from Utilities import find_all_leaves
+from Utilities import find_path_back_triples
 from Utilities import get_all_paths_by_name
 from Utilities import get_subtree
-from Utilities import saveBackupFile
 
 
 # DEBUGG = False
@@ -31,7 +30,6 @@ from Utilities import saveBackupFile
 class Instances(dict):
   def __init__(self):
     super(Instances, self).__init__()
-    self = {}
 
   def addInstance(self, instance, value="undefined", path=None):
     assert path, "addInstance: no path defined"
@@ -42,14 +40,14 @@ class Instances(dict):
 
 
 # noinspection PyProtectedMember
-def makeFileName(project_name, what):
-  file_name = os.path.join(ONTOLOGY_REPOSITORY, project_name) + "+%s." % what + FILE_FORMAT
+def do_makeFileName(project_name, what, file_format=FILE_FORMAT_QUAD_TRIG):
+  file_name = os.path.join(ONTOLOGY_REPOSITORY, project_name) + "+%s." % what + file_format
   return file_name
 
 
-def do__loadFromFile(file_name):
+def do__loadGraphsFromFile(file_name):
   data = ConjunctiveGraph("Memory")
-  data.parse(file_name, format=FILE_FORMAT)
+  data.parse(file_name, format=FILE_FORMAT_QUAD_TRIG)
 
   GRAPHS = {}
   for i in data.contexts():
@@ -97,7 +95,7 @@ def do__renameURI(newName, oldName, uri):
   return uri_new
 
 
-def do__renameItem(graph_name, graph, oldName, type,newName):
+def do__renameItem(graph_name, graph, oldName, type, newName):
   item_uri = URIRef(makeItemURI(graph_name, oldName))
   new_item_uri = URIRef(makeItemURI(graph_name, newName))
   triple = item_uri, None, None
@@ -147,14 +145,7 @@ def do__prepareConjunctiveGraph(graphs):
 def do__writeQuadFile(conjunctiveGraph, f):
   # saveBackupFile(f)
   inf = open(f, "w")
-  inf.write(conjunctiveGraph.serialize(format=FILE_FORMAT))
-  inf.close()
-
-  # makeMessageBox("saved to file:\n   %s" % f, buttons=["OK"])
-
-  fs = f + "_"
-  inf = open(fs, "w")
-  inf.write(conjunctiveGraph.serialize(format="turtle"))
+  inf.write(conjunctiveGraph.serialize(format=FILE_FORMAT_QUAD_TRIG))
   inf.close()
 
 
@@ -196,14 +187,12 @@ def do__removeItem(graph, item_name, parent_name, tree_name):
 
 
 class DataModel:
-  def __init__(self, root):
+  def __init__(self, project_name):
     self.brick_namespaces = {}
     self.tree_namespaces = {}
     self.BRICK_GRAPHS = {}
     self.TREE_GRAPHS = {}
-    self.file_name_bricks = makeFileName(root, what="bricks")
-    self.file_name_trees = makeFileName(root, what="trees")
-    self.file_name_instances = makeFileName(root, what="instances")
+    self.project_name = project_name
     self.instance_counter = {}
     self.instances = {}
 
@@ -214,19 +203,22 @@ class DataModel:
     Loads the graphs and namespaces from the stored files.
     """
     # load the brick graphs
-    self.BRICK_GRAPHS, self.brick_namespaces = do__loadFromFile(self.file_name_bricks)
+    file_name = do_makeFileName(self.project_name, "bricks", file_format=FILE_FORMAT_QUAD_TRIG)
+    self.BRICK_GRAPHS, self.brick_namespaces = do__loadGraphsFromFile(file_name)
 
     # check if the tree file exists
-    exists = os.path.exists(self.file_name_trees)
+    file_name = do_makeFileName(self.project_name, "trees", file_format=FILE_FORMAT_QUAD_TRIG)
+    exists = os.path.exists(file_name)
     if exists:
       # load the tree graphs and namespaces
-      self.TREE_GRAPHS, self.tree_namespaces = do__loadFromFile(self.file_name_trees)
+      self.TREE_GRAPHS, self.tree_namespaces = do__loadGraphsFromFile(file_name)
 
-    # check if the instances file exists
-    exists = os.path.exists(self.file_name_instances)
+    # check if the instance file exists
+    file_name = do_makeFileName(self.project_name, "instances", file_format=FILE_FORMAT_DATA)
+    exists = os.path.exists(file_name)
     if exists:
       # load the instances from the file
-      self.loadInstances(self.file_name_instances)
+      self.loadInstances(file_name)
 
     pass
 
@@ -276,7 +268,6 @@ class DataModel:
     return prop
 
   def getAllNamesInABrickOrATree(self, graphName, what):
-
     names = set()
     if what == "brick":
       g = self.BRICK_GRAPHS[graphName]
@@ -292,7 +283,6 @@ class DataModel:
       graph = self.TREE_GRAPHS[tree_name]
 
     do__removeItem(graph, item_name, parent_name, tree_name)
-
     pass
 
   def addItemToBrick(self, Class, ClassOrSubClass, name):
@@ -342,7 +332,6 @@ class DataModel:
       print(">>> something went wrong, Not triple found")
     pass
 
-
   def modifyPrimitiveType(self, brick_name, primitive_name, new_type):
     graph = self.BRICK_GRAPHS[brick_name]
     prefix = makeItemURI(brick_name, "")
@@ -350,7 +339,8 @@ class DataModel:
     primitive_uri = URIRef(prefix + new_type)
     triple = (None, None, name_uri)
     selected_triples = []
-    
+
+    t = None
     for t in graph.triples(triple):
       selected_triples.append(t)
     if not t:
@@ -366,7 +356,7 @@ class DataModel:
     graph.remove(t)
 
   def renameBrick(self, oldName, newName):
-    new_graph,self.brick_namespaces[newName]  = do__makeNewGraph(newName)
+    new_graph, self.brick_namespaces[newName] = do__makeNewGraph(newName)
     old_graph = self.BRICK_GRAPHS[oldName]
     do__copyGraph(oldName, old_graph, newName, new_graph)
     self.BRICK_GRAPHS[newName] = new_graph
@@ -388,7 +378,6 @@ class DataModel:
     del self.instances[oldName]
 
   def copyTree(self, from_name, to_name):
-
     from_graph = self.TREE_GRAPHS[from_name]
     to_graph, self.tree_namespaces[to_name] = do__makeNewGraph(to_name)
     self.TREE_GRAPHS[to_name] = to_graph
@@ -461,7 +450,7 @@ class DataModel:
 
   def renameItemInBrick(self, brick, old_name, type, new_name):
     g = self.BRICK_GRAPHS[brick]
-    do__renameItem(brick,g , old_name, type , new_name)
+    do__renameItem(brick, g, old_name, type, new_name)
 
   def renameItemInTree(self, brick, old_name, newName):
     graph = self.TREE_GRAPHS[brick]
@@ -483,11 +472,11 @@ class DataModel:
     for s, p, o in brick_graph.triples((None, None, None)):
       if p != RDFSTerms["is_class"]:
         s_new = do__attachBrick(brick_name,
-                                   s,
-                                   tree_name)
+                                s,
+                                tree_name)
         o_new = do__attachBrick(brick_name,
-                                   o,
-                                   tree_name)
+                                o,
+                                tree_name)
         triple = s_new, p, o_new
         tree_graph.add(triple)
     self.replaceBlankWithUndefinedIdentifier(tree_name)
@@ -507,9 +496,7 @@ class DataModel:
     """
     graphs = self.BRICK_GRAPHS
     conjunctiveGraph = do__prepareConjunctiveGraph(graphs)
-    file_name = makeFileName(project_name, "bricks")
-    if not file_name:
-      file_name = self.file_name_bricks
+    file_name = do_makeFileName(project_name, "bricks", file_format=FILE_FORMAT_QUAD_TRIG)
     do__writeQuadFile(conjunctiveGraph, file_name)
     pass
 
@@ -528,25 +515,14 @@ class DataModel:
     """
     graphs = self.TREE_GRAPHS
     conjunctiveGraph = do__prepareConjunctiveGraph(graphs)
-    file_name = makeFileName(project_name, "trees")
-    if not file_name:
-      file_name = self.file_name_trees
-    do__writeQuadFile(conjunctiveGraph, file_name)
-    self.saveBricks(project_name)
-    self.saveInstances(project_name)
-    pass
-    graphs = self.TREE_GRAPHS
-    conjunctiveGraph = do__prepareConjunctiveGraph(graphs)
-    file_name = makeFileName(project_name, "trees")
-    if not file_name:
-      file_name = self.file_name_trees
+    file_name = do_makeFileName(project_name, "trees", file_format=FILE_FORMAT_QUAD_TRIG)
     do__writeQuadFile(conjunctiveGraph, file_name)
     self.saveBricks(project_name)
     self.saveInstances(project_name)
     pass
 
   def saveInstances(self, project_name):
-    file_name = makeFileName(project_name, "instances")
+    file_name = do_makeFileName(project_name, "instances", file_format=FILE_FORMAT_DATA)
     dump = json.dumps(self.instances, indent="  ")
     with open(file_name, "w+") as f:
       f.write(dump)
@@ -599,6 +575,7 @@ class DataModel:
     graph = self.TREE_GRAPHS[tree_name_instantiated] = Graph("Memory")
     # make path
 
+    t = None
     for i in keep_target:
       instance_uri = URIRef(prefix + i)
       root_uri = URIRef(prefix + tree_name)
@@ -626,7 +603,7 @@ class DataModel:
     self.instance_counter[tree_name] = -1
     self.instances[tree_name] = Instances()
 
-    tree_graph,self.tree_namespaces[tree_name] = do__makeNewGraph(tree_name)
+    tree_graph, self.tree_namespaces[tree_name] = do__makeNewGraph(tree_name)
     self.TREE_GRAPHS[tree_name] = tree_graph
     self.linkBrickToItem(tree_name, tree_name, brick_name, new_tree=True)
     pass
@@ -654,7 +631,6 @@ class DataModel:
         for i in properties[start]:
           test_path = list(i.keys())
           if paths[start][0][1:-1] == test_path[1:]:
-            # print("found it")
             properties[start] = [i]
     pass
     return paths, properties, leaves

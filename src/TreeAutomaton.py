@@ -73,6 +73,7 @@ UI_state = {
         "rename tree"                                     : {
                 "show"  : ["exit",
                            "tree_visualise",
+                           "tree_visualise_ontology_only",
                            "ontology_save",
                            "ontology_save_as",
                            "tree_create",
@@ -89,6 +90,7 @@ UI_state = {
         "copy tree"                                       : {
                 "show"  : ["exit",
                            "tree_visualise",
+                           "tree_visualise_ontology_only",
                            "ontology_save",
                            "ontology_save_as",
                            "tree_create",
@@ -105,6 +107,7 @@ UI_state = {
         "delete tree"                                     : {
                 "show"  : ["exit",
                            "tree_visualise",
+                           "tree_visualise_ontology_only",
                            "ontology_save",
                            "ontology_save_as",
                            "tree_create",
@@ -120,6 +123,7 @@ UI_state = {
         "%s in treeTree selected" % RULES["is_class"]     : {  # class in tree selected
                 "show"  : ["exit",
                            "tree_visualise",
+                           "tree_visualise_ontology_only",
                            "ontology_save",
                            "ontology_save_as",
                            "tree_list",
@@ -133,6 +137,7 @@ UI_state = {
         "%s in treeTree selected" % RULES["is_member"]    : {  # member selected
                 "show"  : ["exit",
                            "tree_visualise",
+                           "tree_visualise_ontology_only",
                            "ontology_save",
                            "ontology_save_as",
                            "tree_list",
@@ -147,6 +152,7 @@ UI_state = {
         "item in treeTree selected can be linked"         : {  # linkable member selected
                 "show"  : ["exit",
                            "tree_visualise",
+                           "tree_visualise_ontology_only",
                            "ontology_save",
                            "ontology_save_as",
                            "tree_list",
@@ -162,6 +168,7 @@ UI_state = {
         "%s in treeTree selected" % RULES["is_defined_by"]: {  # linked member selected
                 "show"  : ["exit",
                            "tree_visualise",
+                           "tree_visualise_ontology_only",
                            "ontology_save",
                            "ontology_save_as",
                            "tree_list",
@@ -175,6 +182,7 @@ UI_state = {
         "%s in treeTree selected" % RULES["value"]        : {  # value selected
                 "show"  : ["exit",
                            "tree_visualise",
+                           "tree_visualise_ontology_only",
                            "ontology_save",
                            "ontology_save_as",
                            "tree_list",
@@ -187,6 +195,7 @@ UI_state = {
         "%s in treeTree selected" % RULES["integer"]      : {
                 "show"  : ["exit",
                            "tree_visualise",
+                           "tree_visualise_ontology_only",
                            "ontology_save",
                            "ontology_save_as",
                            "tree_list",
@@ -199,6 +208,7 @@ UI_state = {
         "%s in treeTree selected" % RULES["decimal"]      : {
                 "show"  : ["exit",
                            "tree_visualise",
+                           "tree_visualise_ontology_only",
                            "ontology_save",
                            "ontology_save_as",
                            "tree_list",
@@ -211,6 +221,7 @@ UI_state = {
         "%s in treeTree selected" % RULES["anyURI"]          : {
                 "show"  : ["exit",
                            "tree_visualise",
+                           "tree_visualise_ontology_only",
                            "ontology_save",
                            "ontology_save_as",
                            "tree_list",
@@ -223,6 +234,7 @@ UI_state = {
         "%s in treeTree selected" % RULES["boolean"]      : {
                 "show"  : ["exit",
                            "tree_visualise",
+                           "tree_visualise_ontology_only",
                            "ontology_save",
                            "ontology_save_as",
                            "tree_list",
@@ -235,6 +247,7 @@ UI_state = {
         "add item"                                        : {
                 "show"  : ["exit",
                            "tree_visualise",
+                           "tree_visualise_ontology_only",
                            "ontology_save",
                            "ontology_save_as",
                            "tree_list",
@@ -263,6 +276,7 @@ UI_state = {
         "remove item"                                     : {
                 "show"  : ["exit",
                            "tree_visualise",
+                           "tree_visualise_ontology_only",
                            "ontology_save",
                            "ontology_save_as",
                            "tree_list",
@@ -277,6 +291,7 @@ UI_state = {
         "got primitive"                                   : {
                 "show"  : ["exit",
                            "tree_visualise",
+                           "tree_visualise_ontology_only",
                            "ontology_save",
                            "ontology_save_as",
                            "tree_list",
@@ -291,6 +306,7 @@ UI_state = {
         "link"                                            : {
                 "show"  : ["exit",
                            "tree_visualise",
+                           "tree_visualise_ontology_only",
                            "ontology_save",
                            "ontology_save_as",
                            "tree_list",
@@ -304,6 +320,7 @@ UI_state = {
         "reduce"                                          : {
                 "show"  : ["exit",
                            "tree_visualise",
+                           "tree_visualise_ontology_only",
                            "ontology_save",
                            "ontology_save_as",
                            "tree_list",

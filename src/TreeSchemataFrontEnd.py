@@ -28,7 +28,7 @@ import copy
 import os
 import sys
 
-from BricksAndTreeSemantics import FILE_FORMAT
+from BricksAndTreeSemantics import FILE_FORMAT_QUAD_TRIG
 from TreeSchemataBackEnd import BackEnd
 from Utilities import classCase
 
@@ -199,7 +199,7 @@ class OntobuilderUI(QMainWindow):
     file_spec, extension = QFileDialog.getOpenFileName(None,
                                                        "Load Ontology",
                                                        ONTOLOGY_REPOSITORY,
-                                                       "*.%s" % FILE_FORMAT,
+                                                       "*.%s" % FILE_FORMAT_QUAD_TRIG,
                                                        )
     if file_spec == "":
       return
@@ -210,7 +210,6 @@ class OntobuilderUI(QMainWindow):
             }
     self.backend.processEvent(message)
     self.ui.labelProject.setText(project_name)
-    # self.ui.statusbar.showMessage("loading file")
 
   def on_pushOntologySave_pressed(self):
     global changed
@@ -251,8 +250,8 @@ class OntobuilderUI(QMainWindow):
     # tree_name = brick_name
     message = {
             "event"     : "new tree",
-            "tree_name" : classCase(tree_name),  # .upper(),
-            "brick_name": brick_name  # classCase(tree_name) # brick_name
+            "tree_name" : classCase(tree_name),
+            "brick_name": brick_name
             }
     self.backend.processEvent(message)
 
@@ -280,7 +279,7 @@ class OntobuilderUI(QMainWindow):
       message = {
               "event"    : "copy tree",
               "tree_name": classCase(tree_name)
-              }  # .upper()}
+              }
       self.backend.processEvent(message)
 
   def on_pushTreeDelete_pressed(self):
@@ -438,11 +437,6 @@ class OntobuilderUI(QMainWindow):
         return
 
       else:
-        # # check if there is a instance in the path where the current item is part of
-        # for p in self.paths:
-        #   for pp in self.paths[p]:
-        #     if name in pp and "instance" in pp[0]:
-        #       found = True
         event = "%s in treeTree selected" % type
     else:
       event = "item in treeTree selected can be linked"
@@ -485,7 +479,6 @@ class OntobuilderUI(QMainWindow):
 
     self.existing_names = set()
 
-    # _, name = root.split("#")
     count_children = 0
     widget.clear()
     # rootItem = DebugTreeWidgetItem(widget)
@@ -522,7 +515,6 @@ class OntobuilderUI(QMainWindow):
               pass
           else:
             node_text = i
-          # current_path.append((parent_item, node_text))
 
           # Find or create the child item
           found = None
@@ -541,13 +533,11 @@ class OntobuilderUI(QMainWindow):
 
             # Set the node type for new items
             if "instance" not in node_text:
-
-              # node_type = properties[leave][0].get(node_text.split(":")[0], "unknown")
               node_type = properties[node_text]
               print(f"Creating new node '{node_text}' with type: {node_type}")
               found.node_type = self.rules[node_type]
             else:
-              node_type = properties[instance]  # leave][0][instance]
+              node_type = properties[instance]
               # print(f"Creating new undefined node with type from {path[0]}: {node_type}")
               found.node_type = node_type
 
@@ -563,8 +553,7 @@ class OntobuilderUI(QMainWindow):
             node_type = properties[node_text]  # [leave][0][path[0]]
             print(f"Setting undefined leaf node type using {path[0]}: {node_type}")
             parent_item.node_type = node_type
-          else:  # elif node_text in properties[leave][0]:
-            # node_type = properties[leave][0][node_text]
+          else:
             node_type = properties[node_text.split(":")[0]]
             print(f"Setting leaf node '{node_text}' type to: {node_type}")
             parent_item.node_type = node_type
@@ -576,7 +565,6 @@ class OntobuilderUI(QMainWindow):
         items[i].setForeground(0, QBRUSHES[node_type])
       except:
         pass
-      # print(">>> node", items[i].text(0), node_type)
 
     widget.show()
     widget.expandAll()
@@ -599,7 +587,6 @@ class OntobuilderUI(QMainWindow):
   def save_expanded_state(self):
     """Stores the expanded state of all items in the tree."""
     expanded_state = {}
-    # self._iterate_tree(self.ui.treeTree.invisibleRootItem(), save=True)
     self._iterate_tree(self.treetop, save=True)
 
   def restore_expanded_state(self):

@@ -19,8 +19,9 @@ ITEM_IDENTIFIERS_COUNTED = BASE + CLASS_SEPARATOR + "%s_%s" + ITEM_SEPARATOR
 # ONTOLOGY_REPOSITORY = "../ontologyRepository"
 ONTOLOGY_REPOSITORY = "../../PeriConto-Ontologies"
 
-FILE_FORMAT = "trig"
-FILE_FORMAT_ = "json-ld"
+FILE_FORMAT_QUAD_TRIG = "trig"
+FILE_FORMAT_QUAD_TURTLE = "ttl"
+FILE_FORMAT_DATA = "json"
 
 IDENTIFIER_predicate = URIRef(BASE + ITEM_SEPARATOR + "identifier")
 
