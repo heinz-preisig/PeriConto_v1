@@ -102,6 +102,10 @@ class UI_String(QtWidgets.QDialog):
         # val = r"^[a-zA-Z][a-zA-Z0-9]*$"
         val = r"^([a-zA-Z][a-zA-Z0-9]+\s)*$"
         # self.adjust = r"^[A-Z][A-Z0-9-]*$"
+      elif validator == "name_project":
+        # val = r"^[a-zA-Z][a-zA-Z0-9]*$"
+        val = r"^([a-zA-Z][a-zA-Z0-9]+\s)*$"
+        # self.adjust = r"^[A-Z][A-Z0-9-]*$"
       elif validator == "anyURI":
         val = r"/^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/" #r"^[A-Z][A-Z0-9-]*$"
         val = r"(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})(\.[a-zA-Z0-9]{2,})?"
@@ -142,6 +146,11 @@ class UI_String(QtWidgets.QDialog):
 
     elif self.validator == "name_upper":
       text = text.upper().replace(" ","-")
+      # text = text.replace(" ","-")
+      self.ui.lineEdit.setText(text)
+
+    elif self.validator == "name_project":
+      text = text.upper().replace(" ","_")
       # text = text.replace(" ","-")
       self.ui.lineEdit.setText(text)
 

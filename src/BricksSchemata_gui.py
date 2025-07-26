@@ -12,7 +12,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(773, 1226)
+        MainWindow.resize(773, 918)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -111,10 +111,10 @@ class Ui_MainWindow(object):
         self.pushBrickRename.setObjectName("pushBrickRename")
         self.verticalLayout_2.addWidget(self.pushBrickRename)
         self.listBricks = QtWidgets.QListWidget(parent=self.centralwidget)
-        self.listBricks.setGeometry(QtCore.QRect(30, 340, 341, 601))
+        self.listBricks.setGeometry(QtCore.QRect(30, 340, 341, 551))
         self.listBricks.setObjectName("listBricks")
         self.brickTree = QtWidgets.QTreeWidget(parent=self.centralwidget)
-        self.brickTree.setGeometry(QtCore.QRect(400, 340, 349, 605))
+        self.brickTree.setGeometry(QtCore.QRect(400, 340, 349, 551))
         self.brickTree.setAutoExpandDelay(1)
         self.brickTree.setColumnCount(0)
         self.brickTree.setObjectName("brickTree")

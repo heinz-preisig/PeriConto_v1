@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>773</width>
-    <height>1226</height>
+    <height>918</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -247,7 +247,7 @@
       <x>30</x>
       <y>340</y>
       <width>341</width>
-      <height>601</height>
+      <height>551</height>
      </rect>
     </property>
    </widget>
@@ -257,7 +257,7 @@
       <x>400</x>
       <y>340</y>
       <width>349</width>
-      <height>605</height>
+      <height>551</height>
      </rect>
     </property>
     <property name="autoExpandDelay">

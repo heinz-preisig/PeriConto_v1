@@ -167,7 +167,7 @@ class OntobuilderUI(QMainWindow):
   def on_pushOntologyCreate_pressed(self):
     debugging("-- pushOntologyCreate")
 
-    dialog = UI_String("provide new ontology name", placeholdertext="ontology name")
+    dialog = UI_String("provide new ontology name", placeholdertext="ontology name (blanks convert into _)", validator="name_project")
     name = dialog.text
     if name:
       event = "create ontology"
@@ -209,7 +209,7 @@ class OntobuilderUI(QMainWindow):
 
   def on_pushOntologySaveAs_pressed(self):
     debugging("-- pushOntologySaveAs")
-    dialog = UI_String("save as", "new name")
+    dialog = UI_String("save as", "new name (blanks convert into -)", validator="name_project")
     name = dialog.text
     if name:
       message = {
@@ -223,7 +223,7 @@ class OntobuilderUI(QMainWindow):
     debugging("-- pushBrickCreate")
     dialog = UI_String("new brick",
                        value=None,
-                       placeholdertext="brick name",
+                       placeholdertext="brick name (blanks convert into -)",
                        limiting_list=self.brickList,
                        validator="name_upper")
     name = dialog.text
@@ -249,7 +249,7 @@ class OntobuilderUI(QMainWindow):
     item = self.ui.brickTree.currentItem()
     path = self.__makePath(item)
     dialog = UI_String("name for the new item",
-                       placeholdertext="name -- will be camelised",
+                       placeholdertext="item name (blank separated words convert into camel notation",
                        limiting_list=path,  # self.allNames,
                        validator="camel")
     name = dialog.text
@@ -266,7 +266,7 @@ class OntobuilderUI(QMainWindow):
 
   def askForItemName(self, prompt, existing_names):
     dialog = UI_String(prompt,
-                       placeholdertext="item name",
+                       placeholdertext="item name (blank separated words convert into camel notation",
                        limiting_list=existing_names, validator="camel")
     name = dialog.text
     return name
@@ -287,7 +287,7 @@ class OntobuilderUI(QMainWindow):
     item = self.ui.brickTree.currentItem()
     path = self.__makePath(item)
     dialog = UI_String("name for the new primitive",
-                       placeholdertext="name -- will be camelised",
+                       placeholdertext="item name (blank separated words convert into camel notation",
                        limiting_list=self.allNames,
                        validator="camel")
     primitive_name = dialog.text
@@ -339,7 +339,7 @@ class OntobuilderUI(QMainWindow):
     debugging("-- pushBrickRename")
     dialog = UI_String(prompt="new brick name",
                        value=None,
-                       placeholdertext="brick name",
+                       placeholdertext="brick name (blanks convert into -)",
                        limiting_list=self.brickList,
                        validator="name_upper")
     new_name = dialog.text
