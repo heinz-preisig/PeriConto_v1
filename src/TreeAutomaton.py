@@ -165,7 +165,7 @@ UI_state = {
                 "except": [],
                 "action": [],
                 },
-        "%s in treeTree selected" % RULES["is_defined_by"]: {  # linked member selected
+        "%s in treeTree selected" % RULES["isDefinedBy"]: {  # linked member selected
                 "show"  : ["exit",
                            "tree_visualise",
                            "tree_visualise_ontology_only",
