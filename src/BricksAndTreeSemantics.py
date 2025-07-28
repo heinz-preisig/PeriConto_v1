@@ -48,7 +48,7 @@ RULES = {
         "is_member"    : "is_member",
         "member"       : "is_member",  # tree graph
         "is_defined_by": "is_defined_by",
-        "isDefinedBy"  : "is_defined_by",  # tree graph
+        "isDefinedBy"  : "isDefinedBy",  # tree graph
         "value"        : "value",
         "identifier"   : "identifier",
         "string"       : "string",

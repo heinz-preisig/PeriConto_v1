@@ -453,7 +453,7 @@ class TreePlot:
     self.nodes = set()
 
   def addNode(self, node, type):
-    print("plot", node, type)
+    # print("plot", node, type)
     try:
       specs = NODE_SPECS[type]
     except:
