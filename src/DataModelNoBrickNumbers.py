@@ -152,12 +152,12 @@ def do__writeQuadFile(conjunctiveGraph, f):
 def do__copyGraph(oldName, old_graph, newName, new_graph):
   for s, p, o in old_graph.triples((None, None, None)):
     if p != RDFSTerms["is_class"]:
-      s_new = s
-      o_new = o
+      s_new =copy.copy(s)
+      o_new = copy.copy(o)
       if oldName in str(s):
-        s_new = do__renameURI(newName, oldName, s)
+        s_new = do__renameURI(newName, oldName, s_new)
       if oldName in str(o):
-        o_new = do__renameURI(newName, oldName, o)
+        o_new = do__renameURI(newName, oldName, o_new)
       triple = s_new, p, o_new
       new_graph.add(triple)
 
@@ -571,9 +571,9 @@ class DataModel:
       return
 
     tree_name_instantiated = tree_name + "_i"
-    self.tree_namespaces[tree_name_instantiated] = Namespace(makeItemURI(tree_name_instantiated, ""))
-    graph = self.TREE_GRAPHS[tree_name_instantiated] = Graph("Memory")
-    # make path
+    graph, self.tree_namespaces[tree_name_instantiated] = do__makeNewGraph(tree_name_instantiated)
+    self.TREE_GRAPHS[tree_name_instantiated] = graph
+
 
     t = None
     for i in keep_target:
@@ -596,6 +596,7 @@ class DataModel:
 
     # finally, copy instantiated instances
     self.instances[tree_name_instantiated] = copy.deepcopy(self.instances[tree_name])
+    self.instance_counter[tree_name_instantiated] = copy.copy(self.instance_counter[tree_name])
     pass
 
   def newTree(self, tree_name, brick_name):
