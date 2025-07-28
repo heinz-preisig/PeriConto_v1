@@ -427,10 +427,10 @@ class DataModel:
           empty = path[0] == ""
           defined = path[1:] in defined_paths
           if empty and not defined:
-            print("found an empty leaf", path)
+            # print("found an empty leaf", path)
             self.instance_counter[tree_name] += 1
             instance_ID = "instance_%s" % (self.instance_counter[tree_name])
-            print("counter", self.instance_counter[tree_name])
+            # print("counter", self.instance_counter[tree_name])
             subject_instance = URIRef(prefix + instance_ID)
             subject_empty = URIRef(prefix + "")
             item_type = properties[p][i][path[0]]
@@ -443,8 +443,8 @@ class DataModel:
             graph.add((subject_instance, item_predicate, item_object))
             graph.remove((subject_empty, item_predicate, item_object))
 
-            print("adding  ", subject_instance, item_predicate, item_object)
-            print("removing", subject_empty, item_predicate, item_object)
+            # print("adding  ", subject_instance, item_predicate, item_object)
+            # print("removing", subject_empty, item_predicate, item_object)
 
     pass
 

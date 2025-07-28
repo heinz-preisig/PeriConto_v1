@@ -534,7 +534,7 @@ class OntobuilderUI(QMainWindow):
             # Set the node type for new items
             if "instance" not in node_text:
               node_type = properties[node_text]
-              print(f"Creating new node '{node_text}' with type: {node_type}")
+              # print(f"Creating new node '{node_text}' with type: {node_type}")
               found.node_type = self.rules[node_type]
             else:
               node_type = properties[instance]
@@ -551,11 +551,11 @@ class OntobuilderUI(QMainWindow):
           # For leaf nodes, use the first property in the path if node_text is undefined
           if node_text == "undefined" and path[0] in properties[leave][0]:
             node_type = properties[node_text]  # [leave][0][path[0]]
-            print(f"Setting undefined leaf node type using {path[0]}: {node_type}")
+            # print(f"Setting undefined leaf node type using {path[0]}: {node_type}")
             parent_item.node_type = node_type
           else:
             node_type = properties[node_text.split(":")[0]]
-            print(f"Setting leaf node '{node_text}' type to: {node_type}")
+            # print(f"Setting leaf node '{node_text}' type to: {node_type}")
             parent_item.node_type = node_type
 
     for i in items:

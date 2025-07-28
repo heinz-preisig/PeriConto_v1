@@ -236,7 +236,7 @@ class BackEnd:
   def visualise(self, message):
     tree = self.memory["tree_name"]
     with_no_instances = message["with_no_instances"]
-    print("with instances:", with_no_instances)
+    # print("with instances:", with_no_instances)
     dataBrickTuples = self.dataModel.makeDataTuplesForGraph(tree,
                                                             "tree_name")
     class_names = [tree]  # sorted(self.dataModel.BRICK_GRAPHS.keys())
